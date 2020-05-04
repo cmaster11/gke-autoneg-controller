@@ -41,11 +41,19 @@ var (
 // Backend returns a compute.Backend struct specified with a backend group
 // and the embedded AutonegConfig
 func (s AutonegStatus) Backend(group string) compute.Backend {
+	balancingMode := "RATE"
+
+	if s.AutonegConfig.BalancingMode != "" {
+		balancingMode = s.AutonegConfig.BalancingMode
+	}
+
 	return compute.Backend{
-		Group:              group,
-		BalancingMode:      "RATE",
-		MaxRatePerEndpoint: s.AutonegConfig.Rate,
-		CapacityScaler:     1,
+		Group:                     group,
+		BalancingMode:             balancingMode,
+		MaxRatePerEndpoint:        s.AutonegConfig.Rate,
+		MaxConnections:            s.AutonegConfig.MaxConnections,
+		MaxConnectionsPerEndpoint: s.AutonegConfig.MaxConnectionsPerEndpoint,
+		CapacityScaler:            1,
 	}
 }
 
